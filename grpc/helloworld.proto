@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package helloworld;
+
+service Greeter{
+    // RPC unaria (una richiesta, una risposta SISO)
+    rpc SayHello(HelloRequest) returns (HelloReply);
+
+    // RPC streaming lato server (una richiesta, più risposte SIMO)
+    rpc SayManyHello(HelloRequest) returns (stream HelloReply);
+
+    // RPC streaming lato client (più richieste, una risposte MISO)
+    rpc SayHelloToEveryone(stream HelloRequest) returns (HelloReply);
+
+    // RPC streaming lato server e client (più richieste, più risposte MIMO)
+    rpc SayManyHelloToEveryone(stream HelloRequest) returns (stream HelloReply);
+}
+
+message HelloRequest{
+    string name = 1;
+}
+
+message HelloReply{
+    string message = 1;
+}
