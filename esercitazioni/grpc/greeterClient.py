@@ -1,10 +1,9 @@
 import sys
 from typing import Iterable, Iterator
 
+import grpc
 import helloworld_pb2
 import helloworld_pb2_grpc
-
-import grpc
 
 
 def getHelloRequest(name: str):
@@ -76,7 +75,7 @@ def run(port: int):
 
 if __name__ == "__main__":
     try:
-        PORT = sys.argv[1]
+        PORT = int(sys.argv[1])
     except:
         print("Insert name port as first argument")
         sys.exit(1)
