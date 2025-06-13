@@ -5,7 +5,7 @@ import threading as th
 
 import richiestaRisposta as r
 import stomp
-from service import Service
+from prenotazioneService import Service
 from utils import StopperListener, getFromArgvOrDefault
 
 NUM_RICHIESTE = 10
