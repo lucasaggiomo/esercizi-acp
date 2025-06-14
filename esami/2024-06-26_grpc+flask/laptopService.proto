@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package laptopService;
+
+service LaptopService{
+    rpc buy (Empty) returns (Laptop);
+    rpc sell (Laptop) returns (Ack);
+}
+
+message Empty{
+
+}
+
+message Laptop{
+    int32 serial_number = 1;
+}
+
+message Ack{
+    bool successful = 1;
+}
+
+
+
