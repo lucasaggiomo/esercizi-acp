@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package orderManager;
+
+service OrderManagerService{
+    rpc addOrder(Order) returns (StringMessage);
+    rpc getOrder(StringMessage) returns (Order);
+    rpc searchOrders(StringMessage) returns (stream Order);
+    rpc processOrders(stream Order) returns (stream CombinedShipment);
+    rpc cancelShipment(StringMessage) returns (StringMessage);
+}
+
+message Order{
+    string _id = 1;
+    repeated string items = 2;
+    string descrizione = 3;
+    float prezzo = 4;
+    string destinazione = 5;
+}
+
+message CombinedShipment{
+    string _id = 1;
+    string stato = 2;
+    repeated Order orders = 3;
+    string destinazione = 4;
+}
+
+message StringMessage{
+    string value = 1;
+}
