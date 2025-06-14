@@ -2,7 +2,7 @@ import multiprocessing as mp
 import socket as s
 
 import richiestaRisposta as r
-from service import Service
+from prenotazioneService import Service
 from utils import getFromArgvOrDefault
 
 RECV_SIZE = 1024

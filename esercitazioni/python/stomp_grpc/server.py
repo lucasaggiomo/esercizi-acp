@@ -84,8 +84,9 @@ class MagazzinoServicerImpl(magazzino_pb2_grpc.MagazzinoServicer):
 
     def svuota(self, request, context):
         with self.depositaLock:
-            while not self.queue.empty():
-                yield self.preleva(request, context)
+            with self.prelevaLock:
+                while not self.queue.empty():
+                    yield self.preleva(request, context)
 
 
 if __name__ == "__main__":
