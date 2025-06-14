@@ -38,43 +38,57 @@ class RequestListener(stomp.ConnectionListener):
     def on_message(self, frame: Frame):
         print("[BOOKING MANAGER] Ho ricevuto " + frame.body)
 
-        # decodifica la richiesta
-        args = decodeRequest(frame.body)
+        # delega ad un thread la gestione della richiesta
+        t = th.Thread(
+            target=handleRequest,
+            args=(frame.body, self.conn, self.destination, self.service),
+        )
+        t.start()
 
-        if args == None:
-            print("[BOOKING REQUEST] Errore di decodifica")
-            # invia un messaggio di errore sul topic di risposta
-            self.conn.send(destination=self.destination, body="ERROR")
-            return
 
-            # inoltra la richiesta al servizio
-            args = message.split(DELIMITER)
+def handleRequest(
+    message: str,
+    conn: stomp.Connection,
+    destination: str,
+    service: IPrenotazioneService,
+):
+    # decodifica la richiesta
+    args = decodeRequest(message)
 
-        try:
-            request, args = args[0], args[1]
-            response = ""
+    if args == None:
+        print("[BOOKING REQUEST] Errore di decodifica")
+        # invia un messaggio di errore sul topic di risposta
+        conn.send(destination, body="ERROR")
+        return
 
-            match request:
-                case PrenotazioneRequest.CREATE:
-                    response = self.service.create(
-                        args["client"],
-                        args["hotel"],
-                        args["operator"],
-                        int(args["nights"]),
-                        int(args["people"]),
-                        float(args["cost"]),
-                    )
-                case PrenotazioneRequest.UPDATE:
-                    response = self.service.update(
-                        float(args["discount"]), args["operator"], int(args["nights"])
-                    )
+        # inoltra la richiesta al servizio
+        args = message.split(DELIMITER)
 
-        except KeyError as e:
-            print(f"[BOOKING MANAGER] Argomenti per la richiesta non validi: " + e)
-            return None
+    try:
+        request, args = args[0], args[1]
+        response = ""
 
-        # invia la richiesta sul topic di risposta
-        self.conn.send(destination=self.destination, body=response)
+        match request:
+            case PrenotazioneRequest.CREATE:
+                response = service.create(
+                    args["client"],
+                    args["hotel"],
+                    args["operator"],
+                    int(args["nights"]),
+                    int(args["people"]),
+                    float(args["cost"]),
+                )
+            case PrenotazioneRequest.UPDATE:
+                response = service.update(
+                    float(args["discount"]), args["operator"], int(args["nights"])
+                )
+
+    except KeyError as e:
+        print(f"[BOOKING MANAGER] Argomenti per la richiesta non validi: " + e)
+        return None
+
+    # invia la richiesta sul topic di risposta
+    conn.send(destination, body=response)
 
 
 if __name__ == "__main__":
@@ -95,3 +109,5 @@ if __name__ == "__main__":
     # resta in attesa
     while True:
         time.sleep(60)
+
+    conn.disconnect()
