@@ -3,6 +3,7 @@ import time
 from typing import Any
 
 from statsListeners import StatsListener, TicketsListener
+from statsQueue import StatsQueue
 
 import multiprocessing as mp
 
@@ -13,12 +14,17 @@ TOPIC_TICKETS = "/topic/tickets"
 TOPIC_STATS = "/topic/stats"
 
 DIM_CODA = 5
-MAX_LEN_STR = 32
 
 
 if __name__ == "__main__":
-
     queue = mp.Queue(maxsize=DIM_CODA)
+    lock = mp.Lock()
+    prodCV = mp.Condition(lock)
+    consCV = mp.Condition(lock)
+
+    # NOTE: questo oggetto non è una shared memory, quindi ogni processo ne avrà la sua copia.
+    # Tuttavia gli attributi di tale oggetto sono shared memory (queue, lock, prodCV, consCV)
+    queue = StatsQueue(queue, lock, prodCV, consCV)
 
     conn1 = stomp.Connection([(HOST, PORT)], auto_content_length=False)
     statsListener = StatsListener(queue)

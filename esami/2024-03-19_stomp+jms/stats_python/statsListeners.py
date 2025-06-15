@@ -1,25 +1,18 @@
 import stomp
 from stomp.utils import Frame
 import multiprocessing as mp
-from utils import set_string, get_string
+from statsQueue import StatsQueue
 
 STATS_STRING = "Sold"
 
 
 class StatsListener(stomp.ConnectionListener):
-    def __init__(
-        self,
-        queue: mp.Queue,
-    ):
+    def __init__(self, queue: StatsQueue):
         super().__init__()
         self.queue = queue
 
     def statsFun(self):
-        artists = []
-
-        while not self.queue.empty():
-            artist = self.queue.get()
-            artists.append(artist)
+        artists = self.queue.svuota()
 
         artistStats: dict[str, int] = {}
 
@@ -34,15 +27,13 @@ class StatsListener(stomp.ConnectionListener):
                 line = f"{artist}: {numSells}"
                 file.write(line + "\n")
                 print(
-                    "         [STATS_LISTENER_THREAD] Aggiungo "
-                    + line
-                    + " al file stats.txt"
+                    f"         [STATS_LISTENER_THREAD] Aggiungo {line} al file stats.txt"
                 )
 
     def on_message(self, frame: Frame):
         message = frame.body
 
-        print(f"[STATS_LISTENER] Ho letto il messagggio {message}")
+        print(f"[STATS_LISTENER] Ho letto il messaggio {message}")
         if message != STATS_STRING:
             print("[STATS_LISTENER] Il messaggio non è " + STATS_STRING + "!")
             return
@@ -54,13 +45,13 @@ class StatsListener(stomp.ConnectionListener):
 class TicketsListener(stomp.ConnectionListener):
     def __init__(
         self,
-        queue: mp.Queue,
+        queue: StatsQueue,
     ):
         super().__init__()
         self.queue = queue
 
     def ticketsFun(self, artist: str):
-        self.queue.put(artist)
+        self.queue.push(artist)
         print(f"        [TICKETS_LISTENER_THREAD] Ho aggiunto l'artista {artist}")
 
     def on_message(self, frame: Frame):
