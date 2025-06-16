@@ -12,6 +12,7 @@ from flask_mongo_grpc.utils.dataTypes import DataType
 
 class ServiceStats(service_pb2_grpc.SensorServiceServicer):
     def __init__(self, db):
+        super().__init__()
         self.db = db
 
     def getSensors(self, request: service_pb2.Empty, context) -> Iterator[service_pb2.Sensor]:

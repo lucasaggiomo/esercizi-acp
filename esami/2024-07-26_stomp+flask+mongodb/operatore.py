@@ -37,12 +37,16 @@ if __name__ == "__main__":
     # si connette al provider
     conn.connect(wait=True)
 
-    conn.subscribe(destination=RESPONSE_TOPIC, id=1, ack="auto")
-
     listener = ResponseListener()
     conn.set_listener("listener", listener)
 
-    stompService = StompService(conn, destination=REQUEST_TOPIC)
+    conn.subscribe(destination=RESPONSE_TOPIC, id=1, ack="auto")
+
+    # crea una connessione differente per le send
+    conn2 = stomp.Connection([(HOST_STOMP, PORT_STOMP)])
+    conn2.connect(wait=True)
+
+    stompService = StompService(conn2, destination=REQUEST_TOPIC)
 
     threads: list[th.Thread] = []
 
