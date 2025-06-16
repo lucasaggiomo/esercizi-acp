@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 @app.post("/sensor")
 def createSensor():
-    sensor = request.json
+    sensor = request.get_json()
     print(
         f"[CONTROLLER] Ho ricevuto una richiesta POST su /sensor con body json: {sensor}"
     )
@@ -43,7 +43,7 @@ def createSensor():
 
 @app.post("/data/<data_type>")
 def createSensorData(data_type):
-    sensor_data = request.json
+    sensor_data = request.get_json()
     print(
         f"[CONTROLLER] Ho ricevuto una richiesta POST su /data/{data_type} con body json: {sensor_data}"
     )
