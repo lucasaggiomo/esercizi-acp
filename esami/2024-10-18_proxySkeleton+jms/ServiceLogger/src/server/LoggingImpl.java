@@ -22,7 +22,7 @@ public class LoggingImpl extends LoggingSkeleton {
     }
 
     @Override
-    public void log(String messaggioLog, LogType tipo) {
+    public synchronized void log(String messaggioLog, LogType tipo) {
         Destination destination = null;
 
         switch (tipo) {
