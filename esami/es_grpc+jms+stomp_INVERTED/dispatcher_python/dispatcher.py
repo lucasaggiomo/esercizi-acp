@@ -1,11 +1,11 @@
 import sys
 import threading as th
-import time
-import stomp
-import grpc
+from time import sleep
 
+import grpc
 import magazzino_pb2 as magazzino
 import magazzino_pb2_grpc as magazzino_grpc
+import stomp
 from tipoRichiesta import TipoRichiesta
 
 HOST_STOMP = "localhost"
@@ -32,9 +32,7 @@ def handleRequest(
                 valore = int(splitted[1])
 
                 articolo = magazzino.Articolo(id=valore)
-                print(
-                    f"    [DISPATCHER] Invio una richiesta di deposito dell'articolo {valore}"
-                )
+                print(f"    [DISPATCHER] Invio una richiesta di deposito dell'articolo {valore}")
                 stringMessage: magazzino.StringMessage = stub.deposita(articolo)
                 risposta = stringMessage.value
                 print(f"    [DISPATCHER] Ho ricevuto '{risposta}'")
@@ -55,9 +53,7 @@ def handleRequest(
 
 
 class RichiestaListener(stomp.ConnectionListener):
-    def __init__(
-        self, conn: stomp.Connection, stub: magazzino_grpc.MagazzinoServiceStub
-    ):
+    def __init__(self, conn: stomp.Connection, stub: magazzino_grpc.MagazzinoServiceStub):
         super().__init__()
         self.conn = conn
         self.stub = stub
@@ -69,9 +65,7 @@ class RichiestaListener(stomp.ConnectionListener):
             f"[DISPATCHER] Ho ricevuto la richiesta '{text}' a cui rispondere su '{rispostaDest}'"
         )
 
-        thread = th.Thread(
-            target=handleRequest, args=(self.conn, text, rispostaDest, self.stub)
-        )
+        thread = th.Thread(target=handleRequest, args=(self.conn, text, rispostaDest, self.stub))
         thread.start()
 
 
@@ -92,14 +86,10 @@ if __name__ == "__main__":
     with grpc.insecure_channel(target=f"{HOST_SERVER}:{PORT_SERVER}") as channel:
         stub = magazzino_grpc.MagazzinoServiceStub(channel)
 
-        connSender = stomp.Connection(
-            [(HOST_STOMP, PORT_STOMP)], auto_content_length=False
-        )
+        connSender = stomp.Connection([(HOST_STOMP, PORT_STOMP)], auto_content_length=False)
         connSender.connect(wait=True)
 
-        connReceiver = stomp.Connection(
-            [(HOST_STOMP, PORT_STOMP)], auto_content_length=False
-        )
+        connReceiver = stomp.Connection([(HOST_STOMP, PORT_STOMP)], auto_content_length=False)
 
         listener = RichiestaListener(connSender, stub)
         connReceiver.set_listener("richiestaListener", listener)
@@ -109,6 +99,6 @@ if __name__ == "__main__":
         print("[DISPATCHER] In attesa di richieste...")
 
         while True:
-            time.sleep(1)
+            sleep(1)
 
         connReceiver.disconnect()
