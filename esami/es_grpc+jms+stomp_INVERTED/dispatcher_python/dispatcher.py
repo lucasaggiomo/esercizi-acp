@@ -51,11 +51,7 @@ def handleRequest(
         risposta = "Tipo di richiesta non riconosciuto"
 
     print(f"        [DISPATCHER] Invio la risposta {risposta} al client")
-    conn.send(
-        destination=rispostaDest,
-        body=risposta,
-        # headers={"content-type": "text/plain"}
-    )
+    conn.send(destination=rispostaDest, body=risposta)
 
 
 class RichiestaListener(stomp.ConnectionListener):
