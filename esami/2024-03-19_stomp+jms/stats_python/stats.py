@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     # NOTE: questo oggetto non è una shared memory, quindi ogni processo ne avrà la sua copia.
     # Tuttavia gli attributi di tale oggetto sono shared memory (queue, lock, prodCV, consCV)
-    queue = StatsQueue(queue, lock, prodCV, consCV)
+    queue = StatsQueue(queue, prodCV, consCV)
 
     conn1 = stomp.Connection([(HOST, PORT)], auto_content_length=False)
     statsListener = StatsListener(queue)

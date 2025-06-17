@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package magazzino.grpc;
+
+service MagazzinoService{
+    rpc deposita(Articolo) returns (StringMessage);
+    rpc preleva(Empty) returns (Articolo);
+}
+
+message Articolo{
+    int32 id = 1;
+}
+
+message StringMessage{
+    string value = 1;
+}
+
+message Empty{
+    
+}

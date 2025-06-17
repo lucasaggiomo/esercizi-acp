@@ -4,16 +4,13 @@ import multiprocessing as mp
 # NOTE: Ogni processo necessita di una sua StatsQueue locale, a cui deve essere passata
 # la stessa coda multiprocessing.Queue e gli stessi lock / variabili condition
 class StatsQueue:
-    def __init__(
-        self, queue: mp.Queue, lock: mp.Lock, prodCV: mp.Condition, consCV: mp.Condition
-    ):
+    def __init__(self, queue: mp.Queue, prodCV: mp.Condition, consCV: mp.Condition):
         self.queue = queue
-        self.lock = lock
         self.prodCV = prodCV
         self.consCV = consCV
 
     def push(self, item):
-        with self.lock:
+        with self.prodCV:
             while self.queue.full():
                 self.prodCV.wait()
 
@@ -22,7 +19,7 @@ class StatsQueue:
             self.consCV.notify()
 
     def pop(self):
-        with self.lock:
+        with self.consCV:
             while self.queue.empty():
                 self.consCV.wait()
 
@@ -34,7 +31,7 @@ class StatsQueue:
 
     def svuota(self):
         items = []
-        with self.lock:
+        with self.consCV:
             while not self.queue.empty():
                 items.append(self.queue.get())
 
