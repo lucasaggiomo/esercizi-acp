@@ -1,5 +1,8 @@
+from typing import Optional
+
 from pymongo import MongoClient
 from pymongo.database import Database
+
 
 # classe per incapsulare la connessione al database mongodb
 class MongoService:
@@ -8,7 +11,7 @@ class MongoService:
         self.port = port
 
         self.client = MongoClient(f"mongodb://{host}:{port}")
-        self.db: Database = None
+        self.db: Optional[Database] = None
 
     def getDatabase(self, dbName: str) -> Database:
         self.db = self.client[dbName]
