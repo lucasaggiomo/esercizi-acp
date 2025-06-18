@@ -1,8 +1,13 @@
-package coda;
+package coda.concurrent;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import coda.ICoda;
+import coda.CodaWrapper;
+import coda.exceptions.CodaIsEmptyException;
+import coda.exceptions.CodaIsFullException;
 
 public class CodaConditionsWrapper<T> extends CodaWrapper<T> {
 
@@ -10,7 +15,7 @@ public class CodaConditionsWrapper<T> extends CodaWrapper<T> {
     private final Condition prodCondition;
     private final Condition consCondition;
 
-    public CodaConditionsWrapper(Coda<T> coda) {
+    public CodaConditionsWrapper(ICoda<T> coda) {
         super(coda);
         this.lock = new ReentrantLock();
         this.prodCondition = lock.newCondition();

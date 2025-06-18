@@ -1,0 +1,6 @@
+/user/file_90.doc-color
+/user/file_87.doc-color
+/user/file_35.doc-color
+/user/file_88.txt-color
+/user/file_74.txt-color
+/user/file_34.txt-color
