@@ -1,5 +1,4 @@
 from flask import Flask, request
-
 from operation import Operation
 
 app = Flask(__name__)
@@ -17,7 +16,7 @@ def logHistory(operation: Operation, serial_number: int):
 @app.post("/")
 def handlePostRequest():
     # riconosce l'operazione effettuata
-    body = request.json
+    body = request.get_json()
     print("[HISTORY_MANAGER] Ho ricevuto una richiesta POST con body: ", body)
 
     try:
