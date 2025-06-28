@@ -1,0 +1,17 @@
+Negramaro: 3
+Ligabue: 2
+Ligabue: 1
+Jovanotti: 3
+Negramaro: 1
+Jovanotti: 3
+Ligabue: 2
+Jovanotti: 1
+Ligabue: 1
+Negramaro: 1
+Jovanotti: 1
+Negramaro: 1
+Negramaro: 1
+Jovanotti: 1
+Ligabue: 1
+Negramaro: 1
+Ligabue: 1

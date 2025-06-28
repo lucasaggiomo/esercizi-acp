@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package magazzino;
+
+service Magazzino{
+    // deposita un item e riceve il prodotto
+    rpc deposita(Item) returns (StringMessage);
+
+    // preleva il primo item che trova e riceve l'item
+    rpc preleva(Empty) returns (Item);
+
+    // preleva tutti gli items
+    rpc svuota(Empty) returns (stream Item);
+}
+
+message Item{
+    int64 idItem = 1;
+    string type = 2;
+}
+
+message StringMessage{
+    string value = 1;
+}
+
+message Empty{
+
+}

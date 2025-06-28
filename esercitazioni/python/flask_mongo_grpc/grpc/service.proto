@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package sensor_measurement;
+
+service SensorService{
+    rpc getSensors(Empty) returns (stream Sensor);
+    rpc getMean(MeanRequest) returns (StringMessage);
+}
+
+message Empty{
+
+}
+
+message Sensor{
+    int64 _id = 1;
+    string dataType = 2;
+}
+
+message MeanRequest{
+    int64 sensor_id = 1;
+    string dataType = 2;
+}
+
+message StringMessage{
+    string value = 1;
+}

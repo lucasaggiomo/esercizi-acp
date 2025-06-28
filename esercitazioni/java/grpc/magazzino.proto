@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package magazzinoExample.magazzino;
+
+service Magazzino{
+    rpc deposita (Articolo) returns (Acknowledge);
+    rpc preleva (Empty) returns (Articolo);
+}
+
+message Articolo {
+    int64 id = 1;
+}
+
+message Acknowledge {
+    string message = 1;
+}
+
+message Empty {}
